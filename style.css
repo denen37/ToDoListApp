@@ -6,6 +6,7 @@
 body {
     background-color: gray;
     height: 100vh;
+    font-family: Helvetica, Arial, sans-serif;
 }
 
 .todo-body {
@@ -16,14 +17,21 @@ body {
 }
 
 #calendar {
-    display: block;
-    margin: 0 auto;
     font-size: 1rem;
     background-color: #8a7171;
     color: white;
-    font-family: Helvetica, Arial, sans-serif;
     padding: 2px 5px;
     border-radius: 5px;
+}
+
+.date-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#date-display {
+    color: white;
 }
 
 .list-container {

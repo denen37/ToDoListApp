@@ -9,6 +9,7 @@ let completedTaskContainer = document.getElementById('task-completed-container')
 let calendar = document.getElementById('calendar');
 calendar.valueAsDate = new Date();
 let dueTime = document.getElementById("due-time");
+let displayDate = document.getElementById('date-display');
 
 //Task class
 class Task {
@@ -43,13 +44,42 @@ class DailyPlan {
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+// let dateObj = new Date(calendar.value);
+// console.log(dateObj.toLocaleDateString());
+// console.log(getDate(dateObj));
+
+displayDate.innerHTML = getDate(calendar.value);
+
 //JS Variables
 let dailyPlan = new DailyPlan(calendar.value) //present day
 let dailyPlanList = [dailyPlan];
 
+function getMonth(index) {
+    return months[index];
+}
+
+function getDayOfWeek(index) {
+    return daysOfWeek[index];
+}
+
+function getDate(dateString) {
+    let dateObj = new Date(dateString);
+    //Fri, 03 May, 2024
+    let day = getDayOfWeek(dateObj.getDay());
+    let date = dateObj.getDate();
+
+    date = date < 10 ? '0' + date : date
+
+    let month = getMonth(dateObj.getMonth());
+    let year = dateObj.getFullYear();
+
+    return `${day}, ${date} ${month}, ${year}`
+}
+
 function handleCalendarChange() {
     //create a new daily plan
     //add that daily plan to the list of plans
+    displayDate.innerHTML = getDate(calendar.value);
     let plan = new DailyPlan(calendar.value);
     dailyPlanList.push(plan);
     displayTask();
@@ -60,7 +90,7 @@ function handleCalendarChange() {
 function handleCheckbox(index) {
     let dayPlan = getDailyPlan(calendar.value);
     let completedTask = dayPlan.removeTask(index);
-    console.log(completedTask);
+    //console.log(completedTask);
     dayPlan.completedTodoList.push(completedTask);
     displayTask();
     displayCompletedTask();
@@ -80,7 +110,7 @@ function displayTask() {
 }
 function displayCompletedTask() {
     let dayPlan = getDailyPlan(calendar.value);
-    console.log(dayPlan);
+    //console.log(dayPlan);
     completedTaskContainer.innerHTML = '';
     dayPlan.completedTodoList.map((value, index) => {
         completedTaskContainer.innerHTML += `<div class="task-item">
