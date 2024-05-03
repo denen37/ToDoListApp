@@ -79,21 +79,45 @@ function getDate(dateString) {
 function handleCalendarChange() {
     //create a new daily plan
     //add that daily plan to the list of plans
-    displayDate.innerHTML = getDate(calendar.value);
-    let plan = new DailyPlan(calendar.value);
-    dailyPlanList.push(plan);
-    displayTask();
-    displayCompletedTask();
+    try {
+        let presentDay = new Date();
+        let userSelectedDay = new Date(calendar.value);
+
+        if (presentDay.toLocaleDateString() > userSelectedDay.toLocaleDateString()) {
+            throw new Error('You cannot make a plan for a past day!');
+        }
+
+        displayDate.innerHTML = getDate(calendar.value);
+        let plan = new DailyPlan(calendar.value);
+        dailyPlanList.push(plan);
+        displayTask();
+        displayCompletedTask();
+    } catch (error) {
+        window.alert(error.message);
+    }
 }
 
 
 function handleCheckbox(index) {
-    let dayPlan = getDailyPlan(calendar.value);
-    let completedTask = dayPlan.removeTask(index);
-    //console.log(completedTask);
-    dayPlan.completedTodoList.push(completedTask);
-    displayTask();
-    displayCompletedTask();
+    try {
+
+        let presentDay = new Date();
+        let userSelectedDay = new Date(calendar.value);
+
+        if (userSelectedDay.toLocaleDateString() > presentDay.toLocaleDateString()) {
+            throw new Error('You cannot complete a task for a future day!');
+        }
+
+        let dayPlan = getDailyPlan(calendar.value);
+        let completedTask = dayPlan.removeTask(index);
+        //console.log(completedTask);
+        dayPlan.completedTodoList.push(completedTask);
+        displayTask();
+        displayCompletedTask();
+    } catch (error) {
+        window.alert(error.message);
+        displayTask();
+    }
 }
 function displayTask() {
     let dayPlan = getDailyPlan(calendar.value);
@@ -139,14 +163,30 @@ function getDailyPlan(date) {
     return dailyPlanList.find((value, index) => value.date === date)
 }
 
+function checkTimeMatch(todolist, time) {
+    let todo = todolist.find((value => value.time == time))
+    if (todo)
+        return true
+    return false
+}
+
 function handleSubmitTask() {
     let task = new Task(addTaskInput.value, dueTime.value);
     let dayPlan = getDailyPlan(calendar.value);
 
     if (task.event.trim() && ![',', '.', '!', '?', '%', '(', ')'].includes(task.event.trim())) {
-        dayPlan.addTask(task);
-        displayTask(task)
+        if (checkTimeMatch(dayPlan.todoList, task.time)) {
+            throw new Error('Set Unique time for evnets');
+        }
+        else {
+            dayPlan.addTask(task);
+            displayTask(task)
+        }
     }
+    else {
+        throw new Error('Enter a valid task!');
+    }
+
 
     addTaskInput.value = '';
     closeTaskForm();
