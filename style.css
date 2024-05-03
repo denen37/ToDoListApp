@@ -1,0 +1,110 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: gray;
+    height: 100vh;
+}
+
+.todo-body {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 80%;
+}
+
+#calendar {
+    display: block;
+    margin: 0 auto;
+    font-size: 1rem;
+    background-color: #8a7171;
+    color: white;
+    font-family: Helvetica, Arial, sans-serif;
+    padding: 2px 5px;
+    border-radius: 5px;
+}
+
+.list-container {
+    max-width: 450px;
+    height: 400px;
+    background-color: rgb(36, 8, 8);
+    border-radius: 7px;
+    padding: 14px 16px;
+    margin: 20px auto;
+}
+
+h1 {
+    color: white;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#task-container {
+    margin-top: 20px;
+}
+
+.task-item {
+    color: rgb(78, 78, 78);
+    background-color: white;
+    display: flex;
+    padding: 10px 15px;
+    margin: 10px 5px;
+    gap: 8px;
+    border-radius: 5px;
+}
+
+.btn-container {
+    padding: 0 20px
+}
+
+button {
+    font-size: 15px;
+    color: aliceblue;
+    padding: 10px 10px 10px 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    display: block;
+    transition: opacity 0.3s;
+}
+
+#add-btn {
+    background-color: #0000ff;
+    width: 60%;
+    display: block;
+    margin: 0 auto;
+}
+
+#submit-btn {
+    background-color: rgb(7, 211, 7);
+}
+
+button:hover {
+    opacity: 0.5;
+}
+
+button:active {
+    opacity: 1;
+}
+
+#add-task-container {
+    /* display: flex; */
+    display: none;
+    gap: 20px;
+
+}
+
+#add-task-input {
+    flex: 1;
+    outline: none;
+    padding: 5px 8px;
+    border-radius: 5px;
+}
+
+.add-task-input:focus {
+    border: 2px solid #961d1d;
+    box-shadow: 0 0 10px #961d1d;
+}

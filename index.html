@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>To Do List</title>
+</head>
+
+<body>
+    <div class="list-container">
+        <h1>To Do List</h1>
+        <hr>
+        <div class="todo-body">
+
+            <div>
+                <input type="date" id="calendar" onchange="handleCalendarChange()">
+                <div id="task-container">
+                </div>
+            </div>
+            <div>
+                <h3 style="color: white;">Completed</h3>
+                <div id="task-completed-container">
+
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button id="add-btn" onclick="handleAddBtnClick()">Add Task</button>
+                <div id="add-task-container">
+                    <input type="text" placeholder="Add new task" id="add-task-input" autofocus>
+                    <input type="time" id="due-time">
+                    <button type="submit" id="submit-btn" onclick="handleSubmitTask()">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
