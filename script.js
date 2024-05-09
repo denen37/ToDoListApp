@@ -1,3 +1,6 @@
+import DailyPlan from "./DailyPlan.js";
+import { Task } from "./Task.js";
+import { getDate } from "./Date.js";
 
 //DOM Elements - Document Object Model 
 let addBtn = document.getElementById('add-btn');
@@ -11,70 +14,13 @@ calendar.valueAsDate = new Date();
 let dueTime = document.getElementById("due-time");
 let displayDate = document.getElementById('date-display');
 
-//Task class
-class Task {
-    constructor(_event, _time) {
-        this.event = _event;
-        this.time = _time;
-    }
-}
-
-class DailyPlan {
-    constructor(_date, _todoList = []) {
-        this.date = _date;
-        this.todoList = _todoList;
-        this.completedTodoList = [];
-    }
-
-    addTask(task) {
-        this.todoList.push(task);
-    }
-
-    removeTask(myIndex) {
-        let tempTask = this.todoList[myIndex];
-        //remove task
-        this.todoList = this.todoList.filter((value, index) => index !== myIndex)
-
-        //return task
-        return tempTask;
-    }
-
-}
-
-const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-// let dateObj = new Date(calendar.value);
-// console.log(dateObj.toLocaleDateString());
-// console.log(getDate(dateObj));
 
 displayDate.innerHTML = getDate(calendar.value);
 
 //JS Variables
-let dailyPlan = new DailyPlan(calendar.value) //present day
-let dailyPlanList = [dailyPlan];
+// add present day to list
+let dailyPlanList = [new DailyPlan(calendar.value)];
 
-function getMonth(index) {
-    return months[index];
-}
-
-function getDayOfWeek(index) {
-    return daysOfWeek[index];
-}
-
-function getDate(dateString) {
-    let dateObj = new Date(dateString);
-    //Fri, 03 May, 2024
-    let day = getDayOfWeek(dateObj.getDay());
-    let date = dateObj.getDate();
-
-    date = date < 10 ? '0' + date : date
-
-    let month = getMonth(dateObj.getMonth());
-    let year = dateObj.getFullYear();
-
-    return `${day}, ${date} ${month}, ${year}`
-}
 
 function handleCalendarChange() {
     //create a new daily plan
@@ -90,8 +36,8 @@ function handleCalendarChange() {
         displayDate.innerHTML = getDate(calendar.value);
         let plan = new DailyPlan(calendar.value);
         dailyPlanList.push(plan);
-        displayTask();
-        displayCompletedTask();
+        plan.displayTask(taskContainer);
+        plan.displayCompletedTask(completedTaskContainer);
     } catch (error) {
         window.alert(error.message);
     }
@@ -112,36 +58,18 @@ function handleCheckbox(index) {
         let completedTask = dayPlan.removeTask(index);
         //console.log(completedTask);
         dayPlan.completedTodoList.push(completedTask);
-        displayTask();
-        displayCompletedTask();
+        dayPlan.displayTask(taskContainer);
+        dayPlan.displayCompletedTask(completedTaskContainer);
     } catch (error) {
         window.alert(error.message);
-        displayTask();
+        dayPlan.displayTask(taskContainer);
     }
 }
-function displayTask() {
+
+function handleDelete(index) {
     let dayPlan = getDailyPlan(calendar.value);
-    taskContainer.innerHTML = '';
-    dayPlan.todoList.map((value, index) => {
-        taskContainer.innerHTML += `<div class="task-item">
-                                        <input type="checkbox" value="${index}" onClick="handleCheckbox(${index})">
-                                        <div style="display: flex; justify-content: space-between; flex: 1">
-                                            <p>${value.event}</p>
-                                            <p>${value.time}</p>
-                                        </div>
-                                    </div>`
-    })
-}
-function displayCompletedTask() {
-    let dayPlan = getDailyPlan(calendar.value);
-    //console.log(dayPlan);
-    completedTaskContainer.innerHTML = '';
-    dayPlan.completedTodoList.map((value, index) => {
-        completedTaskContainer.innerHTML += `<div class="task-item">
-                                        <input type="checkbox" value="${index}" checked>
-                                        <p style="text-decoration: line-through;">${value.event}</p>
-                                        </div>`
-    })
+    dayPlan.removeTask(index);
+    dayPlan.displayTask(taskContainer);
 }
 
 function openTaskForm() {
@@ -155,16 +83,19 @@ function closeTaskForm() {
 }
 
 
+
 const handleAddBtnClick = function () {
     openTaskForm();
 }
+
+// window.handleAddBtnClick = handleAddBtnClick;
 
 function getDailyPlan(date) {
     return dailyPlanList.find((value, index) => value.date === date)
 }
 
 function checkTimeMatch(todolist, time) {
-    let todo = todolist.find((value => value.time == time))
+    let todo = todolist.find((value => time && value.time === time))
     if (todo)
         return true
     return false
@@ -174,23 +105,35 @@ function handleSubmitTask() {
     let task = new Task(addTaskInput.value, dueTime.value);
     let dayPlan = getDailyPlan(calendar.value);
 
-    if (task.event.trim() && ![',', '.', '!', '?', '%', '(', ')'].includes(task.event.trim())) {
-        if (checkTimeMatch(dayPlan.todoList, task.time)) {
-            throw new Error('Set Unique time for evnets');
+    try {
+        if (task.event.trim() && ![',', '.', '!', '?', '%', '(', ')'].includes(task.event.trim())) {
+            if (checkTimeMatch(dayPlan.todoList, task.time)) {
+                throw new Error('Set Unique time for events');
+            }
+            else {
+                dayPlan.addTask(task);
+                dayPlan.displayTask(taskContainer);
+            }
         }
         else {
-            dayPlan.addTask(task);
-            displayTask(task)
+            throw new Error('Enter a valid task!');
         }
-    }
-    else {
-        throw new Error('Enter a valid task!');
+    } catch (error) {
+        window.alert(error.message);
     }
 
 
     addTaskInput.value = '';
     closeTaskForm();
 }
+
+//Add Event Listener
+addBtn.addEventListener('click', handleAddBtnClick);
+submitBtn.addEventListener('click', handleSubmitTask);
+calendar.addEventListener('change', handleCalendarChange);
+
+window.handleDelete = handleDelete
+window.handleCheckbox = handleCheckbox
 
 
 

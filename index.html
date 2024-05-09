@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <title>To Do List</title>
 </head>
@@ -16,7 +17,7 @@
 
             <div>
                 <div class="date-container">
-                    <input type="date" id="calendar" onchange="handleCalendarChange()">
+                    <input type="date" id="calendar">
                     <label id="date-display">Fri, 03 May, 2024</label>
                 </div>
                 <div id="task-container">
@@ -30,17 +31,17 @@
             </div>
 
             <div class="btn-container">
-                <button id="add-btn" onclick="handleAddBtnClick()">Add Task</button>
+                <button id="add-btn">Add Task</button>
                 <div id="add-task-container">
                     <input type="text" placeholder="Add new task" id="add-task-input" autofocus>
                     <input type="time" id="due-time">
-                    <button type="submit" id="submit-btn" onclick="handleSubmitTask()">Submit</button>
+                    <button type="submit" id="submit-btn">Submit</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 
 </html>
