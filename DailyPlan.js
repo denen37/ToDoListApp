@@ -18,6 +18,10 @@ class DailyPlan {
         return tempTask;
     }
 
+    applyData(json) {
+        return Object.assign(this, json);
+    }
+
     displayTask(taskContainer) {
         taskContainer.innerHTML = '';
         this.todoList.map((value, index) => {

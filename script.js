@@ -20,6 +20,7 @@ displayDate.innerHTML = getDate(calendar.value);
 //JS Variables
 // add present day to list
 let dailyPlanList = [new DailyPlan(calendar.value)];
+const PLANS = 'plans'
 
 
 function handleCalendarChange() {
@@ -40,6 +41,35 @@ function handleCalendarChange() {
         plan.displayCompletedTask(completedTaskContainer);
     } catch (error) {
         window.alert(error.message);
+    }
+}
+
+function fetchDailyPlans() {
+
+    //when window loaded check if there existing plans
+    //if yes, retrieve plan and display
+    //if no, create a new plan, store in local storage, display
+    //after every update restore the plan in local storage
+    //after every delete
+    //localStorage.clear();
+    //let objString = JSON.stringify(dailyPlanList);
+
+    // localStorage.setItem(PLANS, objString);
+
+    //console.log(localStorage.getItem('plans'));
+    let text = localStorage.getItem(PLANS)
+    let existingPlans = text === 'undefined' ? undefined : text;
+
+    if (existingPlans) {
+        dailyPlanList = JSON.parse(existingPlans);
+        let todayPlan = getDailyPlan(calendar.value);
+        todayPlan = new DailyPlan().applyData(todayPlan);
+
+        todayPlan.displayTask(taskContainer);
+
+    }
+    else {
+        dailyPlanList = [new DailyPlan(calendar.value)];
     }
 }
 
@@ -113,6 +143,9 @@ function handleSubmitTask() {
             else {
                 dayPlan.addTask(task);
                 dayPlan.displayTask(taskContainer);
+                let dayPlanList = JSON.stringify(dailyPlanList);
+                //console.log(dayPlanList);
+                localStorage.setItem(PLANS, dayPlanList);
             }
         }
         else {
@@ -135,6 +168,7 @@ calendar.addEventListener('change', handleCalendarChange);
 window.handleDelete = handleDelete
 window.handleCheckbox = handleCheckbox
 
+window.addEventListener('load', fetchDailyPlans)
 
 
 
