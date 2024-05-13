@@ -19,7 +19,7 @@ displayDate.innerHTML = getDate(calendar.value);
 
 //JS Variables
 // add present day to list
-let dailyPlanList = [new DailyPlan(calendar.value)];
+let dailyPlanList;
 const PLANS = 'plans'
 
 
@@ -66,11 +66,11 @@ function fetchDailyPlans() {
         todayPlan = new DailyPlan().applyData(todayPlan);
 
         todayPlan.displayTask(taskContainer);
-
     }
     else {
         dailyPlanList = [new DailyPlan(calendar.value)];
     }
+
 }
 
 
@@ -85,14 +85,25 @@ function handleCheckbox(index) {
         }
 
         let dayPlan = getDailyPlan(calendar.value);
+        dayPlan = new DailyPlan().applyData(dayPlan);
         let completedTask = dayPlan.removeTask(index);
         //console.log(completedTask);
         dayPlan.completedTodoList.push(completedTask);
+
+        //Find dailyPlan
+        console.log(dayPlan);
+        console.log(dailyPlanList);
+
+        //Store to local storage
+        let dayPlanList = JSON.stringify(dailyPlanList);
+        localStorage.setItem(PLANS, dayPlanList);
+
+        //Display the task
         dayPlan.displayTask(taskContainer);
         dayPlan.displayCompletedTask(completedTaskContainer);
     } catch (error) {
         window.alert(error.message);
-        dayPlan.displayTask(taskContainer);
+        dailyPlan.displayTask(taskContainer);
     }
 }
 
@@ -142,10 +153,12 @@ function handleSubmitTask() {
             }
             else {
                 dayPlan.addTask(task);
-                dayPlan.displayTask(taskContainer);
+
+                //Store to local storage
                 let dayPlanList = JSON.stringify(dailyPlanList);
-                //console.log(dayPlanList);
                 localStorage.setItem(PLANS, dayPlanList);
+
+                dayPlan.displayTask(taskContainer);
             }
         }
         else {
