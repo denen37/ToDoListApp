@@ -63,9 +63,16 @@ function fetchDailyPlans() {
     if (existingPlans) {
         dailyPlanList = JSON.parse(existingPlans);
         let todayPlan = getDailyPlan(calendar.value);
-        todayPlan = new DailyPlan().applyData(todayPlan);
+        if (todayPlan) {
+            todayPlan = new DailyPlan().applyData(todayPlan);
 
-        todayPlan.displayTask(taskContainer);
+            todayPlan.displayTask(taskContainer);
+            todayPlan.displayCompletedTask(completedTaskContainer)
+        }
+        else {
+            localStorage.clear();
+            dailyPlanList = [new DailyPlan(calendar.value)];
+        }
     }
     else {
         dailyPlanList = [new DailyPlan(calendar.value)];
@@ -90,9 +97,8 @@ function handleCheckbox(index) {
         //console.log(completedTask);
         dayPlan.completedTodoList.push(completedTask);
 
-        //Find dailyPlan
-        console.log(dayPlan);
-        console.log(dailyPlanList);
+        // update DailPlan list
+        updateDailyPlan(dayPlan);
 
         //Store to local storage
         let dayPlanList = JSON.stringify(dailyPlanList);
@@ -105,6 +111,11 @@ function handleCheckbox(index) {
         window.alert(error.message);
         dailyPlan.displayTask(taskContainer);
     }
+}
+
+function updateDailyPlan(dayPlan) {
+    let pos = dailyPlanList.findIndex((item) => item.date == dayPlan.date);
+    dailyPlanList[pos] = dayPlan;
 }
 
 function handleDelete(index) {
@@ -145,6 +156,9 @@ function checkTimeMatch(todolist, time) {
 function handleSubmitTask() {
     let task = new Task(addTaskInput.value, dueTime.value);
     let dayPlan = getDailyPlan(calendar.value);
+    if (dayPlan) {
+        dayPlan = new DailyPlan().applyData(dayPlan);
+    }
 
     try {
         if (task.event.trim() && ![',', '.', '!', '?', '%', '(', ')'].includes(task.event.trim())) {
@@ -153,6 +167,9 @@ function handleSubmitTask() {
             }
             else {
                 dayPlan.addTask(task);
+
+                //Upadte daiuly plan
+                updateDailyPlan(dayPlan);
 
                 //Store to local storage
                 let dayPlanList = JSON.stringify(dailyPlanList);
